@@ -1,41 +1,117 @@
-# 👋 Hi, I'm Maedeh Torkian
+# ML-Training — Classification Studies
 
-## 🚀 From Quant Systems to Machine Learning
+A focused exploration of classification models and hyperparameter tuning using the scikit-learn breast cancer dataset. 
+This study compares classical ML models and gradient-boosting learners, documents training logs (CatBoost), and includes visual comparisons of model performance. 
+*The project is intended for researchers and practitioners who want a repeatable notebook-driven study of classification workflows, feature processing, model comparison, and simple tuning strategies.*
 
-### ML-Training
+## Highlights
+- Goal: improve classification score (accuracy / F1) — target noted in the notebook as > 0.99.
+- Dataset: sklearn.datasets.load_breast_cancer (built-in).
+- Models explored: Logistic Regression, SVM, GaussianNB, Decision Tree, Random Forest, K-Nearest Neighbors, XGBoost, LightGBM, CatBoost (and others).
+- Key techniques: train/test split, scaling, feature selection (SelectKBest, RFE), PCA, model comparison, metrics (accuracy, precision, recall, F1, confusion matrix), and CatBoost training logs captured in catboost_info.
+- Artifacts: Jupyter notebook `Classification.ipynb`, CatBoost logs under `catboost_info/`, and a model comparison graphic `model_comparison_rotated.png`.
 
+---
 
-As a passionate data professional, I am leveraging my foundation in quantitative systems and data analytics to transition into machine learning engineering. 
-Most recently, I spearheaded an end-to-end machine learning project using the California housing price dataset, developing an app that predicts property values with 85% accuracy based on carefully selected features. This transformative experience ignited my fascination for machine learning and inspired me to pursue mastery in this dynamic field. 
-I share my practices in my train path as notebooks and files.
+## Repository structure (top-level)
+```
+Classification.ipynb            # Main notebook: data prep, model training, evaluation, plots
+README.md                      # (this file)
+catboost_info/                 # CatBoost training logs and metrics (json, .tsv, etc.)
+  ├─ catboost_training.json    # training iterations & metrics
+  ├─ learn_error.tsv
+  └─ time_left.tsv
+model_comparison_rotated.png   # Visualization comparing model metrics
+requirements.txt               # project reuirements packages
+```
 
-### 🔭 Current Focus
-- Building my ML portfolio (check out my notebooks!)
-- Learning production ML, model deployment, and MLOps
-- Completing ML world...
+---
 
-### 📊 Tech Stack
-| Domain | Tools |
-|--------|-------|
-| Quant Systems | Python, pandas, NumPy, time series |
-| Data Analytics | SQL, PowerBI, Excel, statistical modeling |
-| ML (learning) | scikit-learn, TensorFlow, Containers, Linux |
+## Notebook summary (Classification.ipynb)
+The notebook walks through a typical classification experiment pipeline:
+1. Imports and environment setup (numpy, pandas, matplotlib, seaborn, scipy).
+2. Load dataset (breast cancer) and create DataFrame.
+3. Exploratory data analysis and summary statistics.
+4. Preprocessing: scaling (StandardScaler), optional transformations (Yeo-Johnson), feature selection (SelectKBest, mutual_info_classif, RFE), and PCA experiments.
+5. Model training and evaluation of many learners:
+   - LogisticRegression, SVC, GaussianNB
+   - DecisionTreeClassifier, RandomForestClassifier
+   - KNeighborsClassifier
+   - Boosting libraries: XGBoost (XGBClassifier), LightGBM (LGBMClassifier), CatBoost (CatBoostClassifier)
+6. Metrics: accuracy_score, f1_score, precision, recall, confusion matrix, classification_report.
+7. Model comparison plot(s) exported (one provided as model_comparison_rotated.png).
+8. CatBoost logs captured to `catboost_info/` showing iteration-level learn metrics (e.g., Logloss).
 
-### 🌟 Featured Projects
-- 📈 **[Data Visualization Notebook](link-to-your-repo)** - My first major class project
-- 🏠 **[California House Price Predict](https://github.com/Maee127/Portfolio)** - My first app 
-- 🔄 [Add more as you build them]
+---
 
-### 📫 Connect With Me
-- LinkedIn: www.linkedin.com/in/maede-torkian-sm
-- Email: maede.torkian@gmail.com
+## How to run locally
 
-### 🎯 2026 Goals
-- [*] Complete ML courses
-- [*] Contribute to open source
-- [*] Build and deploy first ML model
-- [ ] Time series & Marcket prediction
-- [ ] AI chatbots
+Prerequisites:
+- Python 3.10+ (the notebook was run with a modern Python — ensure a recent environment)
+- Jupyter (Lab or Notebook) or VS Code with Jupyter support
 
-📊 Data Analytics | 🧮 Quant Systems | 🤖 ML in Progress plus MLOps...
+Suggested quick-start commands:
+```bash
+# Clone the repo
+git clone https://github.com/Maee127/ML-Training.git
+cd ML-Training
+
+# (Optional) Create and activate virtual environment
+python -m venv .venv
+# Windows
+.venv\Scripts\activate
+# macOS / Linux
+source .venv/bin/activate
+
+# Install required packages (example list)
+pip install numpy pandas matplotlib seaborn scipy scikit-learn xgboost lightgbm catboost jupyterlab
+
+# Start Jupyter and open the notebook
+jupyter lab
+# or
+jupyter notebook
+```
+
+Then open `Classification.ipynb` and run cells top-to-bottom. The notebook is self-contained: it uses the sklearn breast cancer dataset (no external downloads required).
+
+---
+
+## Reproducing experiments & notes
+- Use a fixed random seed (e.g., `random_state=42`) for reproducibility across train/test splits and stochastic learners.
+- For gradient-boosting models, training artifacts and iteration metrics for CatBoost are saved under `catboost_info/`. The `catboost_training.json` contains per-iteration Logloss values (learn metric) and timing estimates.
+- The repository includes a pre-generated performance comparison image: `model_comparison_rotated.png`. Re-run plotting cells in the notebook to regenerate with your current runs.
+- When tuning, use cross-validation (GridSearchCV or RandomizedSearchCV) and monitor validation metrics to avoid overfitting. Consider stratified folds for class balance.
+
+---
+
+## Results (what to expect)
+- Training logs (CatBoost) show rapid reduction of Logloss over iterations (see `catboost_info/catboost_training.json`), indicating strong fit on the breast cancer dataset.
+- The notebook calculates standard classification metrics (accuracy, F1, precision, recall) and shows model comparisons via plots. Inspect the notebook outputs and `model_comparison_rotated.png` to view summarized comparisons.
+
+---
+
+## Tips to improve model performance (suggested experiments)
+- Robust cross-validation: StratifiedKFold with repeats and metric averaging to better estimate generalization.
+- Feature engineering: interaction terms, domain-driven transformations, dimensionality reduction (PCA) followed by model ensembling.
+- Hyperparameter tuning: RandomizedSearchCV followed by a focused GridSearchCV for top models (CatBoost, XGBoost, LightGBM, RandomForest).
+- Calibration: try probability calibration (CalibratedClassifierCV) if probabilities are important.
+- Handle class imbalance (if present): though breast cancer dataset is relatively balanced, try stratified sampling, class weights, or resampling techniques as experiments.
+
+---
+
+## Contributing
+- Add experiments or notebooks to expand coverage of preprocessing, tuning, or deployment.
+- If you add long-running training scripts, include checkpoints and small reproducible debug configurations.
+- Open issues/pull requests with reproducible steps and a short summary of findings.
+
+---
+
+## License & Contact
+- License: MIT
+- Author / Contact: Maedeh Torkian — 
+LinkedIn: https://www.linkedin.com/in/maedeh-torkian/
+Email: Maede.torkian@gmail.com
+
+---
+
 
